@@ -18,7 +18,56 @@ class AI:
         self.memory = deque(maxlen=MAXIMUM_MEMORY) #if we exceed memory, it will begin to remove elements
 
     def get_state(self, game):
-        pass
+
+        #checks the 11 possible values
+        head = game.snake[0]
+        point_left = Point(head.x - 20, head.y)
+        point_right = Point(head.x + 20, head.y)
+        point_up = Point(head.x, head.y - 20)
+        point_down = Point(head.x, head.y + 20)
+
+        direction_left = game.direction == Directions.LEFT
+        direction_right = game.direction == Directions.RIGHT
+        direction_up = game.direction == Directions.UP
+        direction_down = game.direction == Directions.DOWN
+
+        #creates the list with 11 possible values. is_collision function takes in a point. 
+        state = [
+
+            #Danger straight. 
+            (direction_left and game.is_collision(point_left)) or 
+            (direction_right and game.is_collision(point_right)) or 
+            (direction_up and game.is_collision(point_up)) or 
+            (direction_down and game.is_collision(point_down)), 
+
+            #Danger right. 
+            (direction_left and game.is_collision(point_up)) or 
+            (direction_right and game.is_collision(point_down)) or
+            (direction_up and game.is_collision(point_right)) or 
+            (direction_down and game.is_collision(point_left)), 
+
+            #Direction left. 
+            (direction_left and game.is_collision(point_down)) or 
+            (direction_right and game.is_collision(point_up)) or
+            (direction_up and game.is_collision(point_left)) or
+            (direction_down and game.is_collision(point_right)), 
+
+            #Move directions.
+            direction_left, direction_right, direction_up, direction_down, 
+
+            #Food location
+            game.food.x < head.x, #food is left
+            game.food.x > head.x, #food is right
+            game.food.y < head.y, #food is up
+            game.food.y > head.y #food is down
+        ]
+
+        #converts the state list into a numpy array will type int.
+        return np.array(state, dtype= int)
+
+
+
+
 
     #for improvements!
     def remember(self, state, action, reward, next_state, done):
@@ -64,7 +113,7 @@ def train():
             #if game is over, train long memory which is also called replay/experience replay memory. 
             game.reset()
             agent.number_of_games += 1
-            agent.train_long_memory
+            agent.train_long_memory()
 
             if score > record:
                 record = score
