@@ -71,13 +71,13 @@ class SnakeGame:
             
             
         #update the head of the snake in order to move
-        self._move(self.action)
+        self._move(action)
         self.snake.insert(0, self.head)
 
         #check if the game is over or there is no improvements. Also update reward for agent to learn
         reward = 0
         game_over = False
-        if self._is_collision() or self.frame_iteration > 100*len(self.snake):
+        if self.is_collision() or self.frame_iteration > 100*len(self.snake):
             game_over = True
             reward = -10
             return reward, game_over, self.score
@@ -97,7 +97,7 @@ class SnakeGame:
         #return game over and score
         return reward, game_over, self.score
 
-    def _is_collision(self, pt=None):
+    def is_collision(self, pt=None):
 
         if pt is None:
             pt = self.head
