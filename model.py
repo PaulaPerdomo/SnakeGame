@@ -12,3 +12,11 @@ class Linear_QNet(nn.Module):
         #the two layers of the neural network
         self.linear1 = nn.Linear(input_size, hidden_size)
         self.linear2 = nn.Linear(hidden_size, output_size)
+
+    def forward(self, x):
+
+        #activation function used is reLU for first layer
+        x = F.relu(self.linear1(x))
+        x = self.linear2(x)
+        return x
+        
