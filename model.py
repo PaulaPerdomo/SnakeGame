@@ -68,5 +68,8 @@ class QTrainer:
         #2. r + y * max(next_predicted Q value) ----> only if the game isnt over
         #pred.clone()
         #preds[argmax(action)] = Q_new
-
+        self.optimizer.zero_grad() #to empty the gradient
+        loss = self.criterion(target, pred)
+        loss.backward() #backward propagation
+        self.optimizer.step()
 
