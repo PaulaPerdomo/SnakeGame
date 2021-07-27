@@ -4,6 +4,7 @@ import random
 import numpy as np
 from snake_game_ai import SnakeGame, Directions, Point
 from collections import deque #stored memories
+from model import Linear_QNet, QTrainer
 
 MAXIMUM_MEMORY = 100_000 
 BATCH_SIZE = 1000
@@ -14,10 +15,10 @@ class AI:
     def __init__(self):
         self.number_of_games = 0
         self.epsilon = 0 #parameter to control randomness
-        self.gamma = 0 #parameter to control discount rate
+        self.gamma = 0.9 #parameter to control discount rate. Needs to be smaller than 1
         self.memory = deque(maxlen=MAXIMUM_MEMORY) #if we exceed memory, it will begin to remove elements
-        self.model = None
-        self.trainer = None
+        self.model = Linear_QNet(11, 256, 3) #11 inputs and 3 outputs. 256 can be changed
+        self.trainer = QTrainer(self.model, lr=LEARNING_RATE, gamma=self.gamma)
 
     def get_state(self, game):
 
@@ -80,7 +81,7 @@ class AI:
             final_move[move] = 1
         else:
             state0 = torch.tensor(state, dtype=torch.float)
-            prediction = self.model.predict(state0)
+            prediction = self.model(state0)
             move = torch.argmax(prediction).item() #makes an integer
             final_move[move] = 1
 
