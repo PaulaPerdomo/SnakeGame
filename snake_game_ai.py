@@ -27,7 +27,7 @@ BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
 
 BLOCKSIZE= 20
-SPEED = 10
+SPEED = 40
 
 Point = namedtuple('Point', 'x, y')
 
